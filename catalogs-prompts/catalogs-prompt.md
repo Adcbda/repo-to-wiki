@@ -94,6 +94,13 @@ Before generating the structure, first infer:
 6. public surface area
 7. extensibility model
 
+Before final output, perform an internal source-hint validation pass:
+1. Normalize every `source_hints` entry by removing annotations in parentheses.
+2. For exact file and directory paths, verify that the path was actually observed in the repository.
+3. For glob patterns, verify that the non-glob parent directory was actually observed in the repository.
+4. If a hint cannot be verified, replace it with the closest verified parent directory, a verified glob, or remove it.
+5. Never output unverifiable source hints.
+
 Then use those findings to design the wiki structure.
 
 Each page entry must include:
@@ -103,6 +110,31 @@ Each page entry must include:
 - answers: 2-5 concrete engineering questions the page should answer
 - source_hints: likely files, directories, packages, or symbols to inspect when generating the page later
 - children: optional nested page entries, only when the child adds a distinct understanding goal
+
+Source hint accuracy rules:
+- Every `source_hints` entry MUST refer to a real path, real directory, real glob parent, or real symbol location observed in the repository.
+- Do NOT invent file paths from class names, module names, subsystem names, conceptual ownership, or naming conventions.
+- If the exact file path is uncertain, use a verified existing parent directory or a verified glob instead.
+- Prefer exact file paths only when the exact file was observed.
+- Parenthetical annotations may identify a section, class, function, or symbol, but the path before the annotation must still be verified.
+- Treat repository paths as discovered evidence, not as a template.
+- The wiki structure should be general across languages and frameworks; only `source_hints` should contain repository-specific paths.
+
+Allowed `source_hints` formats:
+- Exact existing file path observed in the repository: `path/to/file.ext`
+- Exact existing directory path observed in the repository: `path/to/directory/`
+- Glob whose non-glob parent directory exists: `path/to/directory/*.ext`
+- Existing file with symbol/context annotation: `path/to/file.ext (ClassName or function_name)`
+
+These examples describe formats only.
+Do not copy these placeholder paths into the output.
+Do not prefer any particular language, framework, directory name, or repository layout.
+
+Invalid `source_hints`:
+- Non-existent inferred paths
+- Class-like filenames not confirmed in the repository
+- Directories copied from conceptual grouping unless they exist
+- Paths guessed because a similarly named file exists in another directory
 
 This metadata is planning information for the wiki generator.
 It is not documentation content.
