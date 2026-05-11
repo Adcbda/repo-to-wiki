@@ -94,14 +94,22 @@ Before generating the structure, first infer:
 6. public surface area
 7. extensibility model
 
-Before final output, perform an internal source-hint validation pass:
+Then design the wiki structure from those findings.
+
+Important separation of concerns:
+- First decide the page structure from architecture, concepts, runtime flows, responsibilities, and user understanding paths.
+- Do NOT let uncertainty about exact file paths remove, rename, or flatten a useful conceptual page.
+- Source hints are evidence pointers for later documentation generation; they should support the information architecture, not drive it.
+- If a page has a distinct understanding goal but its exact source files are uncertain, keep the page and use a verified parent directory or verified glob in `source_hints`.
+- Only remove a page when the page itself lacks a distinct understanding goal, not merely because its first-choice source hint was unverifiable.
+
+Before final output, perform an internal source-hint validation pass that edits only `source_hints`:
 1. Normalize every `source_hints` entry by removing annotations in parentheses.
 2. For exact file and directory paths, verify that the path was actually observed in the repository.
 3. For glob patterns, verify that the non-glob parent directory was actually observed in the repository.
 4. If a hint cannot be verified, replace it with the closest verified parent directory, a verified glob, or remove it.
-5. Never output unverifiable source hints.
-
-Then use those findings to design the wiki structure.
+5. If an exact symbol/file relationship is uncertain, keep the conceptual page and downgrade the hint to a verified parent directory or glob.
+6. Never output unverifiable source hints.
 
 Each page entry must include:
 - title as the bullet label
@@ -113,12 +121,14 @@ Each page entry must include:
 
 Source hint accuracy rules:
 - Every `source_hints` entry MUST refer to a real path, real directory, real glob parent, or real symbol location observed in the repository.
+- All `source_hints` MUST be relative to the analyzed repository root, not an outer workspace, monorepo checkout, temporary extraction directory, or local absolute path.
 - Do NOT invent file paths from class names, module names, subsystem names, conceptual ownership, or naming conventions.
 - If the exact file path is uncertain, use a verified existing parent directory or a verified glob instead.
 - Prefer exact file paths only when the exact file was observed.
 - Parenthetical annotations may identify a section, class, function, or symbol, but the path before the annotation must still be verified.
 - Treat repository paths as discovered evidence, not as a template.
 - The wiki structure should be general across languages and frameworks; only `source_hints` should contain repository-specific paths.
+- Never organize pages around source hint availability. A verified directory is acceptable evidence for a conceptual page when exact files are not known.
 
 Allowed `source_hints` formats:
 - Exact existing file path observed in the repository: `path/to/file.ext`
