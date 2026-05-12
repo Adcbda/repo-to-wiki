@@ -115,33 +115,62 @@ Inputs:
 
 Output:
 
-```markdown
-# Wiki Structure
+- Write the validated result to `metadata/wiki-structure.json`.
+- The model response must be raw JSON only: no Markdown heading, no code fence, no explanatory prose.
+- If the raw model response is not valid JSON, do not save it as `wiki-structure.json`; save it as `metadata/wiki-structure.raw.md` for debugging and retry the generation.
 
-- Overview
-  type: overview
-  purpose: ...
-  answers:
-    - ...
-  source_hints:
-    - README.md
+```json
+{
+  "repository_classification": {
+    "primary_category": "Framework",
+    "secondary_categories": [],
+    "architecture_style": "...",
+    "major_subsystems": [],
+    "runtime_model": "...",
+    "public_surface_area": [],
+    "developer_workflows": [],
+    "extensibility_model": "..."
+  },
+  "wiki_structure": [
+    {
+      "title": "Overview",
+      "type": "overview",
+      "purpose": "...",
+      "answers": ["..."],
+      "source_hints": ["README.md"],
+      "children": []
+    }
+  ]
+}
 ```
 
 ### Step 2.4 Catalog Validation
 
 Validate the structure before content generation:
 
+- `metadata/wiki-structure.json` parses as JSON
+- the parsed root object contains `repository_classification` and `wiki_structure`
+- `wiki_structure` is a non-empty array
 - every page has `title`, `type`, `purpose`, `answers`, and `source_hints`
+- every page has `children`; use an empty array when there are no child pages
 - every `source_hints` path is verified or downgraded to a verified parent directory/glob
 - hierarchy is usually no deeper than 3 levels
 - pages are conceptual, not folder mirrors
 - page titles are stable enough to become links
 
+Post-processing rules:
+
+- Parse the model response before writing `metadata/wiki-structure.json`.
+- Reject responses whose first non-whitespace character is not `{` or whose last non-whitespace character is not `}`.
+- Reject responses that contain Markdown headings, bullet-list catalog output, or fenced code blocks.
+- Validate the parsed object against the required fields above.
+- On validation failure, preserve the raw response as `metadata/wiki-structure.raw.md`, pass the validation errors into one retry prompt, and write `metadata/wiki-structure.json` only after validation succeeds.
+
 Output:
 
 ```json
 {
-  "wiki_structure": {},
+  "wiki_structure": [],
   "catalog_validation": {
     "status": "pass",
     "warnings": []
@@ -339,7 +368,7 @@ After all reviewed pages are generated:
 1. Write pages to `wiki/<repo_name>/`.
 2. Generate sidebar/navigation from validated wiki structure.
 3. Convert source evidence IDs into source links when possible.
-4. Resolve page links by title.
+4. Resolve page links by title to actual relative Markdown paths.
 5. Generate an index page if the overview is not already the landing page.
 6. Store machine-readable metadata beside the markdown.
 
@@ -355,6 +384,7 @@ wiki/<repo_name>/
   metadata/
     repository.json
     wiki-structure.json
+    wiki-structure.raw.md
     generation-manifest.yaml
     evidence/
       overview.json
@@ -366,6 +396,10 @@ wiki/<repo_name>/
 Run these checks before presenting the wiki:
 
 - Catalog checks:
+  - `metadata/wiki-structure.json` parses as JSON
+  - `metadata/wiki-structure.json` contains no Markdown headings, bullet-list structure, or fenced code blocks
+  - root object contains `repository_classification` and non-empty `wiki_structure`
+  - every page has `title`, `type`, `purpose`, `answers`, `source_hints`, and `children`
   - no invented source hints
   - no folder-mirror structure
   - page hierarchy is not too deep
@@ -386,7 +420,9 @@ Run these checks before presenting the wiki:
   - diagrams cite evidence
 
 - Navigation checks:
-  - all page links resolve
+  - all page links resolve to actual generated Markdown files
+  - index links to generated pages use `pages/<page-slug>.md`
+  - page-to-page sibling links use `<page-slug>.md`
   - child pages are linked from parent pages where useful
   - repeated explanations are minimized
   - terminology is consistent across pages

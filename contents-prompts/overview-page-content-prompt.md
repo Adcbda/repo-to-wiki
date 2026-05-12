@@ -45,7 +45,12 @@ Adapt by repository category:
 
 Citation rules:
 - Every factual claim about purpose, packages, runtime model, supported features, public APIs, commands, or architecture must cite evidence.
-- Use `Sources: [S1] [S2]` after each substantive section.
+- Use clickable Markdown citations after each substantive section: `Sources: [S1](<source-link>) [S2](<source-link>)`.
+- Build each source link from the evidence item's `path` and `line_range`.
+- If `repository_metadata.source_link_base` is present, link to `<source_link_base>/<path>#L<start>-L<end>` for known line ranges.
+- If no `source_link_base` is present, link to a local file URI built from `repository_metadata.root` plus the evidence `path`, using forward slashes, for example `file:///C:/repo/lib/app.js#L10-L25`.
+- If `line_range` is `unknown`, omit the line fragment and link to the file.
+- Do not leave bare source IDs such as `[S1]` in `Sources:` lines; every source ID must be linked.
 - If the README claims a capability but implementation evidence is absent, describe it as repository documentation, not proven behavior.
 
 Output format:
@@ -55,19 +60,19 @@ Return only Markdown:
 # <Repository or Product Name> Overview
 
 ## Relevant source files
-- `path/to/file.ext`
+- [`path/to/file.ext`](<source-link>)
 
 ## Purpose and Scope
 ...
-Sources: [S1]
+Sources: [S1](<source-link>)
 
 ## What This Repository Provides
 ...
-Sources: [S1] [S2]
+Sources: [S1](<source-link>) [S2](<source-link>)
 
 ## High-Level Architecture
 ...
-Sources: [S3] [S4]
+Sources: [S3](<source-link>) [S4](<source-link>)
 
 ## Major Subsystems
 | Subsystem | Responsibility | Primary sources | Related wiki page |
@@ -75,11 +80,11 @@ Sources: [S3] [S4]
 
 ## Main Flow
 ...
-Sources: [S5]
+Sources: [S5](<source-link>)
 
 ## Source Navigation
 ...
-Sources: [S2] [S6]
+Sources: [S2](<source-link>) [S6](<source-link>)
 
 ## Where to Go Next
 - [Architecture](Architecture)

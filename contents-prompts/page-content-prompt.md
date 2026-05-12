@@ -38,8 +38,12 @@ DeepWiki-inspired page shape:
    - Use tables for responsibility matrices, entrypoints, configuration options, API groupings, lifecycle steps, and package relationships.
    - Use Mermaid diagrams only when they clarify architecture or flow and only when the diagram is directly supported by evidence.
 5. Sources
-   - After each substantive section, add a `Sources:` line that cites evidence IDs used in that section.
-   - Citation format: `Sources: [S1] [S3]`
+   - After each substantive section, add a `Sources:` line that cites evidence IDs used in that section as clickable Markdown links.
+   - Citation format: `Sources: [S1](<source-link>) [S3](<source-link>)`
+   - Build each source link from the evidence item's `path` and `line_range`.
+   - If `repository_metadata.source_link_base` is present, link to `<source_link_base>/<path>#L<start>-L<end>` for known line ranges.
+   - If no `source_link_base` is present, link to a local file URI built from `repository_metadata.root` plus the evidence `path`, using forward slashes, for example `file:///C:/repo/lib/app.js#L10-L25`.
+   - If `line_range` is `unknown`, omit the line fragment and link to the file.
 
 Writing rules:
 - Every architectural, behavioral, lifecycle, API, configuration, or packaging claim must be supported by one or more source evidence IDs.
@@ -47,6 +51,7 @@ Writing rules:
 - Do not claim intent, guarantees, or runtime behavior that is not visible in the evidence.
 - Do not invent line numbers, files, classes, methods, configuration keys, package names, or commands.
 - Do not quote long source passages. Summarize instead.
+- Do not leave bare source IDs such as `[S1]` in `Sources:` lines; every source ID must be linked.
 - Prefer precise names from the code over generic labels.
 - Keep the page focused on the target page. Move broad context to the overview page and details to child pages.
 - Avoid "this file does..." repetition. Organize by mental model and behavior.
@@ -65,18 +70,18 @@ Return only the complete Markdown page:
 # <Page Title>
 
 ## Relevant source files
-- `path/to/file.ext`
+- [`path/to/file.ext`](<source-link>)
 
 ## Purpose and Scope
 ...
-Sources: [S1] [S2]
+Sources: [S1](<source-link>) [S2](<source-link>)
 
 ## <Section>
 ...
-Sources: [S3]
+Sources: [S3](<source-link>)
 ```
 
 Quality bar:
 - A new engineer should understand the subsystem or workflow without opening every file.
 - A maintainer should recognize the description as faithful to the code.
-- A later renderer should be able to turn every `Sources:` ID into a file link.
+- Every `Sources:` citation is already clickable and resolves to the cited source file, preferably at the cited line range.

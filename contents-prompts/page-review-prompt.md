@@ -19,7 +19,9 @@ Inputs:
 Review checklist:
 1. Evidence grounding
    - Every architectural, behavioral, API, configuration, lifecycle, command, packaging, or workflow claim has a `Sources:` citation.
+   - Every `Sources:` citation is a clickable Markdown link in the form `[S1](<source-link>)`, not a bare `[S1]`.
    - Every cited source ID exists in the evidence pack.
+   - Every citation link points to the cited evidence file path and includes the cited line range when the evidence `line_range` is known.
    - No claim depends on files, symbols, or line ranges that are not present in evidence.
 
 2. Page intent
@@ -28,7 +30,7 @@ Review checklist:
    - The page does not drift into unrelated child or sibling topics.
 
 3. DeepWiki style
-   - It begins with relevant source files.
+   - It begins with relevant source files, listed as clickable Markdown links.
    - It explains purpose and scope.
    - It is organized by concepts, responsibilities, and flows, not by folders.
    - It uses tables or diagrams where they reduce cognitive load.

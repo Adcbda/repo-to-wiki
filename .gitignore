@@ -1,1 +1,5 @@
 myrepo/
+wiki-generation
+.wiki-run
+__pycache__
+*.pyc

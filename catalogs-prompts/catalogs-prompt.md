@@ -32,7 +32,7 @@ The output should resemble a professional engineering wiki such as:
 - VSCode architecture docs
 - Playwright internal docs
 
-Your output should ONLY contain the wiki directory structure and page-level planning metadata.
+Your output should ONLY contain valid JSON with repository classification, wiki directory structure, and page-level planning metadata.
 
 Do NOT generate actual documentation content yet.
 
@@ -50,40 +50,89 @@ The structure should:
 - identify the engineering questions each page should answer
 - point to likely source areas that should be inspected later
 
-Use the following format:
+Output format requirements:
 
-# Wiki Structure
+- Return ONLY valid JSON.
+- Do NOT include Markdown headings.
+- Do NOT wrap the output in code fences.
+- Do NOT include comments, trailing commas, or explanatory prose.
+- The first character of the response must be `{` and the last character must be `}`.
+- The generated file for this response is `metadata/wiki-structure.json`.
 
-- Overview
-  type: overview
-  purpose: Explain what the system is, who uses it, and the main problems it solves.
-  answers:
-    - What is this repository?
-    - What are the main capabilities?
-  source_hints:
-    - README.md
-    - docs/**
-- Architecture
-  type: architecture
-  purpose: Explain the major components and how they cooperate.
-  answers:
-    - What are the main architectural layers?
-    - Which components own which responsibilities?
-  source_hints:
-    - src/**
-    - packages/**
-  children:
-    - Runtime Flow
-      type: lifecycle
-      purpose: Explain the main execution path through the system.
-      answers:
-        - What starts the flow?
-        - Which components participate?
-        - Where are the key handoff points?
-      source_hints:
-        - src/runtime/**
-        - src/server/**
-...
+Use the following JSON shape:
+
+{
+  "repository_classification": {
+    "primary_category": "Framework",
+    "secondary_categories": ["SDK / Client Library"],
+    "architecture_style": "Middleware-based request/response pipeline",
+    "major_subsystems": [
+      "Application",
+      "Router",
+      "Request",
+      "Response"
+    ],
+    "runtime_model": "Request-response handling with middleware chain",
+    "public_surface_area": [
+      "express() factory",
+      "app methods",
+      "req properties",
+      "res methods"
+    ],
+    "developer_workflows": [
+      "App creation",
+      "Route definition",
+      "Middleware registration"
+    ],
+    "extensibility_model": "Middleware functions, template engines, sub-app mounting, Router instances"
+  },
+  "wiki_structure": [
+    {
+      "title": "Overview",
+      "type": "overview",
+      "purpose": "Explain what the system is, who uses it, and the main problems it solves.",
+      "answers": [
+        "What is this repository?",
+        "What are the main capabilities?"
+      ],
+      "source_hints": [
+        "README.md",
+        "docs/**"
+      ],
+      "children": []
+    },
+    {
+      "title": "Architecture",
+      "type": "architecture",
+      "purpose": "Explain the major components and how they cooperate.",
+      "answers": [
+        "What are the main architectural layers?",
+        "Which components own which responsibilities?"
+      ],
+      "source_hints": [
+        "src/**",
+        "packages/**"
+      ],
+      "children": [
+        {
+          "title": "Runtime Flow",
+          "type": "lifecycle",
+          "purpose": "Explain the main execution path through the system.",
+          "answers": [
+            "What starts the flow?",
+            "Which components participate?",
+            "Where are the key handoff points?"
+          ],
+          "source_hints": [
+            "src/runtime/**",
+            "src/server/**"
+          ],
+          "children": []
+        }
+      ]
+    }
+  ]
+}
 
 Before generating the structure, first infer:
 1. repository type
@@ -112,12 +161,12 @@ Before final output, perform an internal source-hint validation pass that edits 
 6. Never output unverifiable source hints.
 
 Each page entry must include:
-- title as the bullet label
+- `title`
 - type: overview | architecture | concept | lifecycle | subsystem | api | extension | configuration | workflow | development | testing | deployment | reference
 - purpose: one sentence describing why this page exists
 - answers: 2-5 concrete engineering questions the page should answer
 - source_hints: likely files, directories, packages, or symbols to inspect when generating the page later
-- children: optional nested page entries, only when the child adds a distinct understanding goal
+- children: array of nested page entries; use an empty array when there are no children
 
 Source hint accuracy rules:
 - Every `source_hints` entry MUST refer to a real path, real directory, real glob parent, or real symbol location observed in the repository.

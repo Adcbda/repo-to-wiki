@@ -1,0 +1,3 @@
+display_name: Generate Repo Wiki
+short_description: Build grounded repo wiki docs.
+default_prompt: Generate a grounded wiki for this repository from its source code.
