@@ -26,6 +26,9 @@ Review checklist:
 
 2. Page intent
    - The page answers the `answers` questions from the page metadata.
+   - The page covers the declared `scope` and does not absorb topics assigned to parent, child, or sibling pages.
+   - The page explains the listed `primary_mechanisms` when evidence supports them, and explicitly notes evidence gaps when it cannot.
+   - The page uses `key_entities` accurately and does not invent related symbols, files, packages, commands, or configuration keys.
    - The page respects its type: overview, architecture, concept, lifecycle, subsystem, api, extension, configuration, workflow, development, testing, deployment, or reference.
    - The page does not drift into unrelated child or sibling topics.
 
@@ -33,6 +36,8 @@ Review checklist:
    - It begins with relevant source files, listed as clickable Markdown links.
    - It explains purpose and scope.
    - It is organized by concepts, responsibilities, and flows, not by folders.
+   - It uses repository-specific section headings from the planned outline or evidence.
+   - It does not read like a FAQ, interview, or generic tutorial.
    - It uses tables or diagrams where they reduce cognitive load.
    - It includes cross-links to parent, child, or related pages when useful.
 
@@ -63,6 +68,9 @@ Return only JSON:
   ],
   "missing_answers": [
     "<planned question not answered>"
+  ],
+  "missing_mechanisms": [
+    "<primary mechanism not explained or not supported>"
   ],
   "unsupported_claims": [
     "<claim that lacks source support>"

@@ -33,7 +33,9 @@ DeepWiki-inspired page shape:
    - Explain what the page covers and what it deliberately leaves to related pages.
    - Link to parent, child, or related pages by title when useful.
 4. Body sections
-   - Use sections that match the page's purpose and planned questions.
+   - Use the page's `page_outline` as the default section plan.
+   - Use sections that match the page's scope, primary mechanisms, key entities, and evidence.
+   - Do not use the planned `answers` questions as headings.
    - Explain concepts, responsibilities, lifecycle, data flow, API surface, configuration, or workflows as appropriate.
    - Use tables for responsibility matrices, entrypoints, configuration options, API groupings, lifecycle steps, and package relationships.
    - Use Mermaid diagrams only when they clarify architecture or flow and only when the diagram is directly supported by evidence.
@@ -55,6 +57,8 @@ Writing rules:
 - Prefer precise names from the code over generic labels.
 - Keep the page focused on the target page. Move broad context to the overview page and details to child pages.
 - Avoid "this file does..." repetition. Organize by mental model and behavior.
+- Avoid FAQ style. The page should read like an engineering reference, not a list of questions and answers.
+- Do not create sections named only "What is X?", "How does X work?", "Overview", or "Key Concepts" when a source-backed mechanism title would be clearer.
 - Avoid marketing language.
 - Avoid tutorial filler unless the page type is workflow, development, testing, deployment, or quick start.
 - Use repository-specific section names when clearer than generic names.

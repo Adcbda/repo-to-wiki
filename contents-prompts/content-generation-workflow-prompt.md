@@ -22,19 +22,24 @@ Generate a reliable page-by-page content plan that can be executed by an LLM, co
 Plan these downstream stages for every page:
 
 1. Page intent extraction
-   - Read the page title, type, purpose, answers, source_hints, parent page, child pages, and sibling pages.
-   - Decide what engineering question the page must answer.
-   - Identify whether the page needs conceptual explanation, runtime flow, API reference, configuration behavior, developer workflow, or source navigation guidance.
+   - Read the page title, type, navigation_group, purpose, scope, primary_mechanisms, key_entities, page_outline, answers, source_hints, parent page, child pages, and sibling pages.
+   - Decide what source-backed mechanism, runtime flow, API family, responsibility boundary, configuration behavior, or developer workflow the page must explain.
+   - Treat `answers` as acceptance criteria. Do not turn them into headings or make the content plan read like a FAQ.
+   - Identify what belongs on the page and what should be delegated to parent, child, or sibling pages.
 
 2. Evidence selection
    - Specify how the downstream source evidence selection prompt should be run for the page.
    - Start from verified source_hints.
+   - Use `primary_mechanisms` and `key_entities` to search for implementation, public exports, tests, examples, and docs.
    - Expand to nearby tests, examples, configuration files, documentation, entrypoints, public exports, and implementation files when they are relevant.
    - Do not invent files or symbols.
+   - Prefer evidence that explains handoffs, ownership, contracts, defaults, error paths, generated/manual boundaries, or workflow steps.
 
 3. Page drafting
    - Specify how the downstream DeepWiki page content prompt should use the selected evidence pack.
    - Write a focused page, not a file summary.
+   - Follow `page_outline` unless evidence shows a stronger section order.
+   - Write sections around mechanisms and responsibilities, not around the planned questions.
    - Use clickable source citations for every architectural, behavioral, lifecycle, or API claim.
    - Prefer repository remote links from `repository_metadata.source_link_base`; otherwise use local file URI links built from `repository_metadata.root`.
    - Prefer tables and concise diagrams where they reduce cognitive load.
@@ -66,9 +71,15 @@ generation_manifest:
   pages:
     - title: "<page title>"
       type: "<page type>"
+      navigation_group: "<navigation group>"
       path: "<suggested wiki output path>"
       parent: "<parent title or null>"
+      scope: "<what belongs on this page and what belongs elsewhere>"
       intent: "<one sentence>"
+      primary_mechanisms:
+        - "<mechanism, flow, API family, workflow, or responsibility>"
+      key_entities:
+        - "<symbol, package, command, config key, protocol, generated artifact, or runtime participant>"
       must_answer:
         - "<question>"
       evidence_strategy:
@@ -79,6 +90,8 @@ generation_manifest:
         retrieval_queries:
           - "<query or symbol search>"
       content_shape:
+        page_outline:
+          - "<planned DeepWiki section>"
         required_sections:
           - "<section>"
         optional_sections:
@@ -97,3 +110,5 @@ Quality rules:
 - Do not add pages unless a required explanation cannot fit the current structure.
 - Do not remove pages only because exact evidence is not known yet; mark evidence gaps instead.
 - Treat clickable source citations as mandatory for generated content.
+- Do not plan FAQ-style pages. Planned questions must remain acceptance checks, while sections should explain mechanisms, APIs, flows, responsibilities, and workflows.
+- Prefer repository-specific terminology from `key_entities` and source evidence over generic section names.

@@ -18,6 +18,8 @@ Then adapt the wiki structure accordingly.
 The repository category should change both:
 - which top-level sections appear
 - which subsystem pages are considered important
+- which repository-specific mechanisms should become page titles
+- which public abstractions, runtime participants, commands, protocols, generated artifacts, or product domains should become `key_entities`
 
 Use the following category-specific structure priorities when applicable:
 
@@ -72,3 +74,10 @@ Distributed System:
 If a repository fits multiple categories, choose one primary category and optionally borrow sections from secondary categories.
 Do not include category template sections that are not supported by the actual repository.
 Do not force generic sections such as "Module System" or "Event System" unless they are meaningful for the repository.
+
+Classification should capture more than the category label:
+- Identify the main execution or usage lifecycle in concrete repository vocabulary.
+- Identify public API families, command groups, resource groups, or object models when present.
+- Identify generated/manual boundaries, adapters, plugins, transports, protocols, renderers, parsers, services, or model families when present.
+- Prefer exact names observed in README, manifests, exports, examples, tests, package names, or high-signal source excerpts.
+- Avoid generic labels like "Core", "Utils", "API", "Configuration", or "Development" unless those are actual named surfaces in the repository.

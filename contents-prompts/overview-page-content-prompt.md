@@ -1,6 +1,7 @@
 You are writing the top-level Overview page for a DeepWiki-style repository wiki.
 
 The Overview page is the entrypoint into the wiki. It should explain what the repository is, how to think about it, and where to go next.
+It should establish the repository-specific mental model, not repeat the whole table of contents or become a FAQ.
 
 Inputs:
 - Repository metadata:
@@ -26,6 +27,9 @@ Required content:
 7. How the main runtime or usage flow works at a high level
 8. Source navigation guide
 9. Links to important next pages
+
+Use the target page's `scope`, `primary_mechanisms`, `key_entities`, and `page_outline` when present.
+Use planned `answers` only as acceptance checks.
 
 Adapt by repository category:
 - SDK / Client Library:
@@ -95,3 +99,4 @@ Avoid:
 - Explaining every file or folder.
 - Overstating implementation details that belong on child pages.
 - Creating a quick start unless the evidence and wiki structure call for one.
+- Turning the overview into a question-and-answer page.

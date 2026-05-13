@@ -19,6 +19,7 @@ When to generate a diagram:
 - API pages: resource hierarchy, client delegation, or object model if useful.
 - Configuration pages: configuration read/merge/apply flow if useful.
 - Development/testing/deployment pages: pipeline or workflow if useful.
+- Pages whose `primary_mechanisms` include multiple runtime participants, handoffs, states, resources, adapters, generated/manual boundaries, or configuration stages.
 
 When not to generate a diagram:
 - The evidence does not show relationships clearly.
@@ -29,7 +30,7 @@ When not to generate a diagram:
 Rules:
 - Use Mermaid.
 - Keep diagrams compact: usually 5-12 nodes.
-- Use exact component, class, module, command, or package names from evidence.
+- Use exact component, class, module, command, package, protocol, resource, or config names from evidence and `key_entities`.
 - Do not include files as nodes unless the file itself is a runtime participant or public entrypoint.
 - Do not invent calls or data movement.
 - Label uncertain relationships conservatively or omit them.
